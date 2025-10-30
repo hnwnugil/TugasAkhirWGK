@@ -52,7 +52,7 @@ Laptop::Laptop()
 void Laptop::openLid()
 {
     // Batasi bukaan layar hingga 120 derajat
-    if (step < 120) step++;
+    if (step < 145) step++;
 }
 
 void Laptop::closeLid()

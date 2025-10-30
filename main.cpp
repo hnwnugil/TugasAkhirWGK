@@ -1,17 +1,12 @@
 #include <iostream>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-#include "Laptop.h" // Sertakan kelas baru
-#include "Meja.h"   // (Seperti di kode asli)
-#include "Tv.h"     // (Seperti di kode asli)
+#include "Laptop.h" 
+#include "Meja.h"   
+#include "Tv.h"     
+#include "Camera.h"
 
-// --- SEMUA GLOBAL TERKAIT KOTAK DIHAPUS ---
-// (step, vertices, normals, stripIndices)
-
-// Buat instance global dari Laptop
 static Laptop laptop;
+static Camera camera;
 
-// Initialization routine (Tidak berubah)
 void setup(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -41,8 +36,6 @@ void setup(void)
 // Drawing routine
 void drawScene(void)
 {
-    // --- SEMUA KODE GAMBAR BOLA DAN KOTAK DIHAPUS ---
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
@@ -50,13 +43,12 @@ void drawScene(void)
     // Posisikan kamera (Sama seperti aslinya)
     gluLookAt(0.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    // Gambar laptop
+    camera.look();
     laptop.draw();
 
     glutSwapBuffers();
 }
 
-// OpenGL window reshape routine (Tidak berubah)
 void resize(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -66,7 +58,6 @@ void resize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Keyboard input processing routine (Tidak berubah)
 void keyInput(unsigned char key, int x, int y)
 {
     switch (key)
@@ -74,9 +65,22 @@ void keyInput(unsigned char key, int x, int y)
     case 27:
         exit(0);
         break;
+    case 'w':
+        camera.moveForward();
+        break;
+    case 's':
+        camera.moveBackward();
+        break;
+    case 'a':
+        camera.turnLeft();
+        break;
+    case 'd':
+        camera.turnRight();
+        break;
     default:
         break;
     }
+	glutPostRedisplay();
 }
 
 // Callback routine for non-ASCII key entry
@@ -89,14 +93,13 @@ void specialKeyInput(int key, int x, int y)
     glutPostRedisplay();
 }
 
-// Routine to output interaction instructions (Tidak berubah)
 void printInteraction(void)
 {
     std::cout << "Interaction:" << std::endl;
     std::cout << "Press up/down arrow keys to open/close the laptop." << std::endl;
+    std::cout << "Press WASD keys to move the camera." << std::endl;
 }
 
-// Main routine (Tidak berubah)
 int main(int argc, char** argv)
 {
     printInteraction();
@@ -108,7 +111,7 @@ int main(int argc, char** argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Tugas Akhir"); // Mengganti nama window
+    glutCreateWindow("Tugas Akhir");
     glutDisplayFunc(drawScene);
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyInput);

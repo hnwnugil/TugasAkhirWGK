@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Laptop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meja.cpp" />
     <ClCompile Include="Tv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Laptop.h" />
     <ClInclude Include="Meja.h" />
     <ClInclude Include="Tv.h" />
