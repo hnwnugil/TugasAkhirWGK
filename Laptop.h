@@ -1,9 +1,6 @@
 #ifndef LAPTOP_H
 #define LAPTOP_H
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
 class Laptop
 {
 public:

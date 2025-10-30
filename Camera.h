@@ -1,12 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <cmath>
-#include <GL/freeglut.h>
-
 class Camera
 {
-public:
+private:
     // Variabel untuk menyimpan posisi, titik lihat, dan vektor 'up'
     float posX, posY, posZ;
     float lookX, lookY, lookZ;
@@ -14,8 +11,16 @@ public:
 
     // Kecepatan gerak kamera
     float moveSpeed;
-    float rotateSpeed;
+    float mouseSense;
 
+    float yaw;   // Rotasi Kiri/Kanan
+    float pitch; // Rotasi Atas/Bawah
+
+    // Variabel untuk mouse
+    int windowCenterX;
+    int windowCenterY;
+
+public:
     // Konstruktor
     Camera();
 
@@ -25,13 +30,18 @@ public:
     // Fungsi untuk menggerakkan kamera
     void moveForward();
     void moveBackward();
-    void turnLeft();
-    void turnRight();
+	void moveLeft();
+    void moveRight();
+    void mouseLook(int x, int y);
+    void centerMouse();
+   
+	void setWindowCenter(int centerX, int centerY)
+    { 
+            windowCenterX = centerX; 
+            windowCenterY = centerY; 
+	}
 
-private:
-    // Fungsi helper privat untuk mendapatkan vektor arah
-    void getForwardVector(float& fwdX, float& fwdZ);
-	void rotateView(float angle);
+
 };
 
 #endif // CAMERA_H

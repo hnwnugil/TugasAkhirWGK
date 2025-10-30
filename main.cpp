@@ -1,4 +1,7 @@
 #include <iostream>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 #include "Laptop.h" 
 #include "Meja.h"   
 #include "Tv.h"     
@@ -56,13 +59,23 @@ void resize(int w, int h)
     glLoadIdentity();
     gluPerspective(60.0, (float)w / (float)h, 1.0, 20.0);
     glMatrixMode(GL_MODELVIEW);
+
+	camera.setWindowCenter(w / 2, h / 2);
+    camera.centerMouse();
+}
+
+void mouseMove(int x, int y) {
+    camera.mouseLook(x, y);
+    glutPostRedisplay(); // Minta gambar ulang setelah mouse bergerak
 }
 
 void keyInput(unsigned char key, int x, int y)
 {
-    switch (key)
+    switch (tolower(key))
     {
     case 27:
+        exit(0);
+        glutSetCursor(GLUT_CURSOR_LEFT_ARROW); // Tampilkan kursor lagi
         exit(0);
         break;
     case 'w':
@@ -72,10 +85,10 @@ void keyInput(unsigned char key, int x, int y)
         camera.moveBackward();
         break;
     case 'a':
-        camera.turnLeft();
+        camera.moveLeft();
         break;
     case 'd':
-        camera.turnRight();
+        camera.moveRight();
         break;
     default:
         break;
@@ -98,6 +111,7 @@ void printInteraction(void)
     std::cout << "Interaction:" << std::endl;
     std::cout << "Press up/down arrow keys to open/close the laptop." << std::endl;
     std::cout << "Press WASD keys to move the camera." << std::endl;
+    std::cout << "Move the mouse to look around." << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -116,6 +130,9 @@ int main(int argc, char** argv)
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyInput);
     glutSpecialFunc(specialKeyInput);
+    glutPassiveMotionFunc(mouseMove);
+    glutSetCursor(GLUT_CURSOR_NONE);
+	
 
     glewExperimental = GL_TRUE;
     glewInit();

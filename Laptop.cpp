@@ -1,5 +1,7 @@
 #include "Laptop.h"
-#include <iostream> // Diperlukan untuk std::cout
+#include <iostream>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 // Definisi dari main.cpp asli
 #define ONE_BY_ROOT_THREE 0.57735
