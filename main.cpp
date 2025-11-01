@@ -7,11 +7,13 @@
 #include "Tv.h"     
 #include "Camera.h"
 #include "MejaTv.h"
+#include "Lantai.h"
 
 static Laptop laptop;
 static Camera camera;
 static Tv tv;
 static MejaTv mejaTv;
+static Lantai lantai;
 
 void setup(void)
 {
@@ -45,6 +47,7 @@ void drawScene(void)
     glLoadIdentity();
 
     camera.look();
+    lantai.draw();
 
     glPushMatrix();
     glTranslatef(-1.5f, 0.0f, 0.0f);
