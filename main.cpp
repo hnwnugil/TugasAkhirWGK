@@ -6,9 +6,12 @@
 #include "Meja.h"   
 #include "Tv.h"     
 #include "Camera.h"
+#include "MejaTv.h"
 
 static Laptop laptop;
 static Camera camera;
+static Tv tv;
+static MejaTv mejaTv;
 
 void setup(void)
 {
@@ -36,18 +39,28 @@ void setup(void)
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE); // Enable local viewpoint.
 }
 
-// Drawing routine
 void drawScene(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glLoadIdentity();
 
-    // Posisikan kamera (Sama seperti aslinya)
-    gluLookAt(0.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
     camera.look();
+
+    glPushMatrix();
+    glTranslatef(-1.5f, 0.0f, 0.0f);
     laptop.draw();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(3.0f, 1.0f, -2.0f); 
+    glTranslatef(0.0f, -1.2f, 0.0f); 
+    mejaTv.draw();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(3.0f, 1.0f, -2.0f);
+    tv.draw();
+    glPopMatrix();
 
     glutSwapBuffers();
 }
@@ -124,7 +137,7 @@ int main(int argc, char** argv)
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
+    glutInitWindowPosition(500, 100);
     glutCreateWindow("Tugas Akhir");
     glutDisplayFunc(drawScene);
     glutReshapeFunc(resize);
