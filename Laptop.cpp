@@ -58,6 +58,7 @@ Laptop::Laptop()
 {
     // Inisialisasi sudut layar (lid)
     step = 0;
+    bIsOpen = false;
 
     // Inisialisasi bounding box berdasarkan vertices laptop
     minX = -1.0f;
@@ -83,8 +84,8 @@ void Laptop::animateOpen()
         // Delay untuk mengontrol kecepatan animasi
         delayMs(ANIMATION_DELAY);
     }
-	bIsOpen = true;
 
+    bIsOpen = true; // Set status to open
     std::cout << "Lid opened to: " << step << " degrees" << std::endl;
 }
 
@@ -103,8 +104,8 @@ void Laptop::animateClose()
         // Delay untuk mengontrol kecepatan animasi
         delayMs(ANIMATION_DELAY);
     }
-	bIsOpen = false;
 
+    bIsOpen = false; // Set status to closed
     std::cout << "Lid closed to: " << step << " degrees" << std::endl;
 }
 
@@ -123,112 +124,25 @@ void Laptop::closeLid()
 bool Laptop::isHit(float rayOriginX, float rayOriginY, float rayOriginZ,
     float rayDirX, float rayDirY, float rayDirZ)
 {
-    // Hitbox offset - membuat area klik lebih besar dari laptop sebenarnya
-    float hitboxOffset = 0.5f; // Offset 0.5 unit di semua arah
-
-    // Buat expanded bounding box untuk hit detection
-    float expandedMinX = minX - hitboxOffset;
-    float expandedMaxX = maxX + hitboxOffset;
-    float expandedMinY = minY - hitboxOffset;
-    float expandedMaxY = maxY + hitboxOffset;
-    float expandedMinZ = minZ - hitboxOffset;
-    float expandedMaxZ = maxZ + hitboxOffset;
-
-    // Ray-AABB intersection using the slab method dengan expanded bounding box
-    float t_near = -999999.0f; // Nilai sangat kecil
-    float t_far = 999999.0f;   // Nilai sangat besar
-
-    // Cek Sumbu X dengan expanded bounds
-    if (rayDirX == 0.0f) {
-        // Ray sejajar dengan slab X, cek apakah origin berada di dalam slab
-        if (rayOriginX < expandedMinX || rayOriginX > expandedMaxX) return false;
-    }
-    else {
-        float t1 = (expandedMinX - rayOriginX) / rayDirX;
-        float t2 = (expandedMaxX - rayOriginX) / rayDirX;
-        if (t1 > t2) std::swap(t1, t2); // Pastikan t1 <= t2
-        t_near = std::max(t_near, t1);
-        t_far = std::min(t_far, t2);
-        if (t_near > t_far) return false; // Sinar tidak menabrak slab X
-    }
-
-    // Cek Sumbu Y dengan expanded bounds
-    if (rayDirY == 0.0f) {
-        if (rayOriginY < expandedMinY || rayOriginY > expandedMaxY) return false;
-    }
-    else {
-        float t1 = (expandedMinY - rayOriginY) / rayDirY;
-        float t2 = (expandedMaxY - rayOriginY) / rayDirY;
-        if (t1 > t2) std::swap(t1, t2);
-        t_near = std::max(t_near, t1);
-        t_far = std::min(t_far, t2);
-        if (t_near > t_far) return false; // Sinar tidak menabrak slab Y
-    }
-
-    // Cek Sumbu Z dengan expanded bounds
-    if (rayDirZ == 0.0f) {
-        if (rayOriginZ < expandedMinZ || rayOriginZ > expandedMaxZ) return false;
-    }
-    else {
-        float t1 = (expandedMinZ - rayOriginZ) / rayDirZ;
-        float t2 = (expandedMaxZ - rayOriginZ) / rayDirZ;
-        if (t1 > t2) std::swap(t1, t2);
-        t_near = std::max(t_near, t1);
-        t_far = std::min(t_far, t2);
-        if (t_near > t_far) return false; // Sinar tidak menabrak slab Z
-    }
-
-    // Cek apakah box ada di belakang kita (t_far < 0 berarti seluruh box di belakang)
-    if (t_far < 0) return false;
-
-    // Jika semua cek lolos, berarti SINAR MENGENAI BOX (dengan offset)
-    return true;
+    // Gunakan static function dari Raycast class
+    return Raycast::rayAABBIntersection(
+        rayOriginX, rayOriginY, rayOriginZ,
+        rayDirX, rayDirY, rayDirZ,
+        minX, minY, minZ,
+        maxX, maxY, maxZ,
+        HITBOX_OFFSET
+    );
 }
 
-void Laptop::drawBoundingBox()
+void Laptop::getBoundingBox(float& outMinX, float& outMinY, float& outMinZ,
+    float& outMaxX, float& outMaxY, float& outMaxZ) const
 {
-    // Simpan status OpenGL saat ini
-    glPushAttrib(GL_LIGHTING_BIT | GL_CURRENT_BIT | GL_LINE_BIT);
-
-    // Matikan lighting dan atur warna
-    glDisable(GL_LIGHTING);
-    glColor3f(0.0f, 1.0f, 0.0f); // Hijau untuk expanded hitbox
-    glLineWidth(2.0f);
-
-    // Hitbox offset - sama seperti di isHit()
-    float hitboxOffset = 0.5f;
-    float expandedMinX = minX - hitboxOffset;
-    float expandedMaxX = maxX + hitboxOffset;
-    float expandedMinY = minY - hitboxOffset;
-    float expandedMaxY = maxY + hitboxOffset;
-    float expandedMinZ = minZ - hitboxOffset;
-    float expandedMaxZ = maxZ + hitboxOffset;
-
-    // Gambar expanded hitbox saja
-    glBegin(GL_LINES);
-
-    // Bottom face (Y = expandedMinY)
-    glVertex3f(expandedMinX, expandedMinY, expandedMinZ); glVertex3f(expandedMaxX, expandedMinY, expandedMinZ);
-    glVertex3f(expandedMaxX, expandedMinY, expandedMinZ); glVertex3f(expandedMaxX, expandedMinY, expandedMaxZ);
-    glVertex3f(expandedMaxX, expandedMinY, expandedMaxZ); glVertex3f(expandedMinX, expandedMinY, expandedMaxZ);
-    glVertex3f(expandedMinX, expandedMinY, expandedMaxZ); glVertex3f(expandedMinX, expandedMinY, expandedMinZ);
-
-    // Top face (Y = expandedMaxY)
-    glVertex3f(expandedMinX, expandedMaxY, expandedMinZ); glVertex3f(expandedMaxX, expandedMaxY, expandedMinZ);
-    glVertex3f(expandedMaxX, expandedMaxY, expandedMinZ); glVertex3f(expandedMaxX, expandedMaxY, expandedMaxZ);
-    glVertex3f(expandedMaxX, expandedMaxY, expandedMaxZ); glVertex3f(expandedMinX, expandedMaxY, expandedMaxZ);
-    glVertex3f(expandedMinX, expandedMaxY, expandedMaxZ); glVertex3f(expandedMinX, expandedMaxY, expandedMinZ);
-
-    // Vertical edges
-    glVertex3f(expandedMinX, expandedMinY, expandedMinZ); glVertex3f(expandedMinX, expandedMaxY, expandedMinZ);
-    glVertex3f(expandedMaxX, expandedMinY, expandedMinZ); glVertex3f(expandedMaxX, expandedMaxY, expandedMinZ);
-    glVertex3f(expandedMaxX, expandedMinY, expandedMaxZ); glVertex3f(expandedMaxX, expandedMaxY, expandedMaxZ);
-    glVertex3f(expandedMinX, expandedMinY, expandedMaxZ); glVertex3f(expandedMinX, expandedMaxY, expandedMaxZ);
-
-    glEnd();
-
-    // Kembalikan status OpenGL
-    glPopAttrib();
+    outMinX = minX;
+    outMinY = minY;
+    outMinZ = minZ;
+    outMaxX = maxX;
+    outMaxY = maxY;
+    outMaxZ = maxZ;
 }
 
 void Laptop::draw()

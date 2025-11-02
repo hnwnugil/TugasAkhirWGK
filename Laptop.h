@@ -1,7 +1,9 @@
 #ifndef LAPTOP_H
 #define LAPTOP_H
 
-class Laptop
+#include "Raycast.h"
+
+class Laptop : public Raycast::IRaycastable
 {
 public:
     // Konstruktor
@@ -20,8 +22,10 @@ public:
 
     // Raycast hit detection
     bool isHit(float rayOriginX, float rayOriginY, float rayOriginZ,
-        float rayDirX, float rayDirY, float rayDirZ);
-    void drawBoundingBox();
+        float rayDirX, float rayDirY, float rayDirZ) override;
+
+    void getBoundingBox(float& minX, float& minY, float& minZ,
+        float& maxX, float& maxY, float& maxZ) const override;
 
 	bool getIsOpen() const { return bIsOpen; }
 
@@ -39,6 +43,8 @@ private:
     static constexpr int MAX_STEP = 145; // Step maksimum (145 derajat)
     static constexpr int ANIMATION_SPEED = 3; // Kecepatan animasi (step per iterasi)
     static constexpr int ANIMATION_DELAY = 20; // Delay dalam milidetik antar step
+    static constexpr float HITBOX_OFFSET = 0.5f; // Offset untuk hitbox
+
 };
 
 #endif // LAPTOP_H

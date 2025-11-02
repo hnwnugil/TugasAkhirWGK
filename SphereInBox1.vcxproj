@@ -25,6 +25,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meja.cpp" />
     <ClCompile Include="MejaTv.cpp" />
+    <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="Tv.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,7 @@
     <ClInclude Include="Laptop.h" />
     <ClInclude Include="Meja.h" />
     <ClInclude Include="MejaTv.h" />
+    <ClInclude Include="Raycast.h" />
     <ClInclude Include="Tv.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

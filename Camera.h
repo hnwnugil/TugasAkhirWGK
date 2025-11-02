@@ -3,9 +3,7 @@
 
 #include <cmath>
 #include <GL/freeglut.h>
-
-// Forward declaration
-class Laptop;
+#include "Raycast.h"
 
 class Camera
 {
@@ -56,8 +54,16 @@ public:
     float getLookY() { return lookY; }
     float getLookZ() { return lookZ; }
 
-    // Raycast function
-    bool raycast(Laptop& laptop);
+    // Generic raycast function untuk IRaycastable objects
+    bool raycast(Raycast::IRaycastable& object);
+
+    // Template function untuk raycast ke berbagai object types
+    template<typename T>
+    bool raycastTo(T& object) {
+        static_assert(std::is_base_of_v<Raycast::IRaycastable, T>,
+            "Object must implement IRaycastable interface");
+        return raycast(object);
+    }
 
 private:
     // Fungsi helper privat untuk mendapatkan vektor arah

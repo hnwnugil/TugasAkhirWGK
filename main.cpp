@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "MejaTv.h"
 #include "Lantai.h"
+#include "Raycast.h"
 
 static Laptop laptop;
 static Camera camera;

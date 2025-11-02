@@ -33,8 +33,8 @@ Camera::Camera() {
 }
 
 // Raycast function - checks if camera is looking at the laptop
-bool Camera::raycast(Laptop& laptop) {
-    return laptop.isHit(posX, posY, posZ, lookX, lookY, lookZ);
+bool Camera::raycast(Raycast::IRaycastable& object) {
+    return object.isHit(posX, posY, posZ, lookX, lookY, lookZ);
 }
 
 // Terapkan transformasi view menggunakan gluLookAt
