@@ -1,6 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <cmath>
+#include <GL/freeglut.h>
+
+// Forward declaration
+class Laptop;
+
 class Camera
 {
 private:
@@ -30,18 +36,34 @@ public:
     // Fungsi untuk menggerakkan kamera
     void moveForward();
     void moveBackward();
-	void moveLeft();
+    void moveLeft();
     void moveRight();
     void mouseLook(int x, int y);
     void centerMouse();
-   
-	void setWindowCenter(int centerX, int centerY)
-    { 
-            windowCenterX = centerX; 
-            windowCenterY = centerY; 
-	}
 
+    void setWindowCenter(int centerX, int centerY)
+    {
+        windowCenterX = centerX;
+        windowCenterY = centerY;
+    }
 
+    // Getter functions untuk raycast
+    float getPosX() { return posX; }
+    float getPosY() { return posY; }
+    float getPosZ() { return posZ; }
+
+    float getLookX() { return lookX; }
+    float getLookY() { return lookY; }
+    float getLookZ() { return lookZ; }
+
+    // Raycast function
+    bool raycast(Laptop& laptop);
+
+private:
+    // Fungsi helper privat untuk mendapatkan vektor arah
+    void getForwardVector(float& forwardX, float& forwardZ);
+    void getRightVector(float& rightX, float& rightZ);
+    void rotateView(float angle);
 };
 
 #endif // CAMERA_H

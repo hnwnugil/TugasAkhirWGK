@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Laptop.h" // Include this for the raycast function
 
 #define PI 3.1415926535f
 
@@ -29,6 +30,11 @@ Camera::Camera() {
     lookX = cos(pitch) * cos(yaw);
     lookY = sin(pitch);
     lookZ = cos(pitch) * sin(yaw);
+}
+
+// Raycast function - checks if camera is looking at the laptop
+bool Camera::raycast(Laptop& laptop) {
+    return laptop.isHit(posX, posY, posZ, lookX, lookY, lookZ);
 }
 
 // Terapkan transformasi view menggunakan gluLookAt
@@ -122,4 +128,19 @@ void Camera::centerMouse() {
     // Fungsi ini "memaksa" kursor kembali ke tengah layar
     // Ini penting agar rotasi bisa tak terbatas
     glutWarpPointer(windowCenterX, windowCenterY);
+}
+
+// Private helper functions (add these if they don't exist)
+void Camera::getForwardVector(float& forwardX, float& forwardZ) {
+    forwardX = cos(yaw);
+    forwardZ = sin(yaw);
+}
+
+void Camera::getRightVector(float& rightX, float& rightZ) {
+    rightX = sin(yaw);
+    rightZ = -cos(yaw);
+}
+
+void Camera::rotateView(float angle) {
+    yaw += angle;
 }

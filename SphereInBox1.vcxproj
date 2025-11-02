@@ -20,15 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Lantai.cpp" />
     <ClCompile Include="Laptop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meja.cpp" />
+    <ClCompile Include="MejaTv.cpp" />
     <ClCompile Include="Tv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Lantai.h" />
     <ClInclude Include="Laptop.h" />
     <ClInclude Include="Meja.h" />
+    <ClInclude Include="MejaTv.h" />
     <ClInclude Include="Tv.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

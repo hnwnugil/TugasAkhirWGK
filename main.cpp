@@ -15,6 +15,8 @@ static Tv tv;
 static MejaTv mejaTv;
 static Lantai lantai;
 
+void drawCrosshair(); // Deklarasi fungsi untuk menggambar crosshair
+
 void setup(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -65,7 +67,67 @@ void drawScene(void)
     tv.draw();
     glPopMatrix();
 
+    drawCrosshair(); // Gambar crosshair di atas semuanya
+
     glutSwapBuffers();
+}
+
+void drawCrosshair() {
+    // Save all OpenGL state that we might modify
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+    // Get current viewport dimensions
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    int w = viewport[2];
+    int h = viewport[3];
+
+    // Disable all 3D rendering features
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+
+    // Save and set up 2D orthographic projection
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, w, 0.0, h, -1.0, 1.0);
+
+    // Save and reset modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // Draw crosshair
+    float centerX = w / 2.0f;
+    float centerY = h / 2.0f;
+    float crosshairSize = 10.0f;
+
+    // Set crosshair color and line width
+    glColor3f(0.0f, 0.0f, 0.0f); // Black crosshair
+    glLineWidth(2.0f);
+
+    // Draw the crosshair lines
+    glBegin(GL_LINES);
+    // Horizontal line
+    glVertex2f(centerX - crosshairSize, centerY);
+    glVertex2f(centerX + crosshairSize, centerY);
+    // Vertical line
+    glVertex2f(centerX, centerY - crosshairSize);
+    glVertex2f(centerX, centerY + crosshairSize);
+    glEnd();
+
+    // Restore matrices
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    // Restore all OpenGL state
+    glPopAttrib();
 }
 
 void resize(int w, int h)
@@ -83,6 +145,37 @@ void resize(int w, int h)
 void mouseMove(int x, int y) {
     camera.mouseLook(x, y);
     glutPostRedisplay(); // Minta gambar ulang setelah mouse bergerak
+}
+
+void mouseClick(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+       
+    }
+    else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+    {
+        // Right click to close lid
+        if (camera.raycast(laptop))
+        {
+            if(laptop.getIsOpen() == false)
+            { 
+                std::cout << ">>> Ray HIT laptop! Opening lid..." << std::endl;
+                laptop.animateOpen(); // Gunakan animasi untuk klik
+                glutPostRedisplay();
+            }
+            else
+            {
+                std::cout << ">>> Ray HIT laptop! Closing lid..." << std::endl;
+                laptop.animateClose(); // Gunakan animasi untuk klik
+                glutPostRedisplay();
+            }
+        }
+        else
+        {
+            std::cout << ">>> Ray MISS." << std::endl;
+        }
+    }
 }
 
 void keyInput(unsigned char key, int x, int y)
@@ -125,7 +218,7 @@ void specialKeyInput(int key, int x, int y)
 void printInteraction(void)
 {
     std::cout << "Interaction:" << std::endl;
-    std::cout << "Press up/down arrow keys to open/close the laptop." << std::endl;
+    std::cout << "Press right mouse keys to open/close the laptop." << std::endl;
     std::cout << "Press WASD keys to move the camera." << std::endl;
     std::cout << "Move the mouse to look around." << std::endl;
 }
@@ -142,13 +235,14 @@ int main(int argc, char** argv)
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(500, 100);
     glutCreateWindow("Tugas Akhir");
+	glutSetWindow(glutGetWindow());
     glutDisplayFunc(drawScene);
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyInput);
     glutSpecialFunc(specialKeyInput);
     glutPassiveMotionFunc(mouseMove);
+    glutMouseFunc(mouseClick);
     glutSetCursor(GLUT_CURSOR_NONE);
-	
 
     glewExperimental = GL_TRUE;
     glewInit();
