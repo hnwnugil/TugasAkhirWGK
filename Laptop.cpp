@@ -5,62 +5,50 @@
 #include <algorithm>
 
 // Definisi dari main.cpp asli
-#define ONE_BY_ROOT_THREE 0.57735
+#define ONE_BY_ROOT_THREE 0.57735f
 
-// Data vertex, normal, dan index sekarang menjadi 'static' 
-// di dalam file .cpp ini, hanya bisa diakses oleh kelas Laptop.
-
-// Box vertex co-ordinate vectors.
-// MODIFIKASI: Nilai Y diubah dari [-1.0, 1.0] menjadi [0.0, 0.1] 
-// agar lebih tipis seperti laptop.
-static float vertices[] =
-{
-    1.0, 0.0, 1.0,  // 0
-    1.0, 0.1, 1.0,  // 1
-    1.0, 0.1, -1.0, // 2
-    1.0, 0.0, -1.0, // 3
-    -1.0, 0.0, 1.0, // 4
-    -1.0, 0.1, 1.0, // 5
-    -1.0, 0.1, -1.0,// 6
-    -1.0, 0.0, -1.0 // 7
+// Data geometri laptop (dibuat static karena hanya digunakan di file ini)
+static float vertices[] = {
+    1.0f, 0.0f, 1.0f,   // 0
+    1.0f, 0.1f, 1.0f,   // 1
+    1.0f, 0.1f, -1.0f,  // 2
+    1.0f, 0.0f, -1.0f,  // 3
+    -1.0f, 0.0f, 1.0f,  // 4
+    -1.0f, 0.1f, 1.0f,  // 5
+    -1.0f, 0.1f, -1.0f, // 6
+    -1.0f, 0.0f, -1.0f  // 7
 };
 
-// Vertex indices (Sama seperti aslinya)
 static unsigned char stripIndices0[] = { 5, 4, 1, 0, 2, 3, 6, 7, 5, 4 };
 static unsigned char stripIndices1[] = { 0, 4, 3, 7 };
 static unsigned char stripIndices2[] = { 6, 5, 2, 1 };
 
-// Box vertex normal vectors (Sama seperti aslinya)
-// (Ini akan membuat pencahayaan "squashed", tapi sesuai dengan kode asli)
-static float normals[] =
-{
-    ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,
-    ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,
-    ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE,
-    ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE,
-    -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,
-    -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,
-    -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE,
-    -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE
+static float normals[] = {
+    ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,   // 0
+    ONE_BY_ROOT_THREE,  ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,   // 1
+    ONE_BY_ROOT_THREE,  ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE,  // 2
+    ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE,  // 3
+    -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,  // 4
+    -ONE_BY_ROOT_THREE,  ONE_BY_ROOT_THREE, ONE_BY_ROOT_THREE,  // 5
+    -ONE_BY_ROOT_THREE,  ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, // 6
+    -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE, -ONE_BY_ROOT_THREE  // 7
 };
 
-// Helper function untuk delay (Windows/Unix compatible)
+// Fungsi delay sederhana (busy wait)
 void delayMs(int ms) {
     int start = glutGet(GLUT_ELAPSED_TIME);
     while (glutGet(GLUT_ELAPSED_TIME) - start < ms) {
-        // Busy wait - simple but works on all platforms
+        // Busy wait
     }
 }
 
-// Implementasi Metode Kelas Laptop
-
-Laptop::Laptop()
-{
-    // Inisialisasi sudut layar (lid)
+// Konstruktor
+Laptop::Laptop() {
     step = 0;
     bIsOpen = false;
+    bIsScreenOn = false; // Layar mati saat inisialisasi
 
-    // Inisialisasi bounding box berdasarkan vertices laptop
+    // Inisialisasi bounding box
     minX = -1.0f;
     maxX = 1.0f;
     minY = 0.0f;
@@ -69,62 +57,63 @@ Laptop::Laptop()
     maxZ = 1.0f;
 }
 
-void Laptop::animateOpen()
-{
+// Animasi membuka laptop
+void Laptop::animateOpen() {
     std::cout << "Starting lid open animation..." << std::endl;
-
     while (step < MAX_STEP) {
         step += ANIMATION_SPEED;
         if (step > MAX_STEP) step = MAX_STEP;
-
-        // Render frame untuk melihat animasi
         glutPostRedisplay();
-        glutMainLoopEvent(); // Process events tanpa blocking
-
-        // Delay untuk mengontrol kecepatan animasi
+        glutMainLoopEvent();
         delayMs(ANIMATION_DELAY);
     }
-
-    bIsOpen = true; // Set status to open
+    bIsOpen = true;
     std::cout << "Lid opened to: " << step << " degrees" << std::endl;
 }
 
-void Laptop::animateClose()
-{
+// Animasi menutup laptop
+void Laptop::animateClose() {
     std::cout << "Starting lid close animation..." << std::endl;
+
+    // Matikan layar saat menutup laptop
+    if (bIsScreenOn) {
+        bIsScreenOn = false;
+        std::cout << "Screen turned off (laptop closing)" << std::endl;
+    }
 
     while (step > 0) {
         step -= ANIMATION_SPEED;
         if (step < 0) step = 0;
-
-        // Render frame untuk melihat animasi
         glutPostRedisplay();
-        glutMainLoopEvent(); // Process events tanpa blocking
-
-        // Delay untuk mengontrol kecepatan animasi
+        glutMainLoopEvent();
         delayMs(ANIMATION_DELAY);
     }
-
-    bIsOpen = false; // Set status to closed
+    bIsOpen = false;
     std::cout << "Lid closed to: " << step << " degrees" << std::endl;
 }
 
-void Laptop::openLid()
-{
-    // Versi lama untuk keyboard - langsung increment
+// Metode manual untuk buka/tutup (tidak digunakan dalam animasi utama, hanya untuk debugging atau kontrol halus)
+void Laptop::openLid() {
     if (step < MAX_STEP) step++;
 }
 
-void Laptop::closeLid()
-{
-    // Versi lama untuk keyboard - langsung decrement
+void Laptop::closeLid() {
     if (step > 0) step--;
 }
 
+// Toggle layar laptop (hanya jika cukup terbuka)
+void Laptop::toggleScreen() {
+    if (step >= 90) {
+        bIsScreenOn = !bIsScreenOn;
+        std::cout << "Laptop screen turned " << (bIsScreenOn ? "ON" : "OFF") << std::endl;
+    } else {
+        std::cout << "Cannot turn on screen - laptop lid is not open enough!" << std::endl;
+    }
+}
+
+// Deteksi raycast terhadap bounding box dengan offset
 bool Laptop::isHit(float rayOriginX, float rayOriginY, float rayOriginZ,
-    float rayDirX, float rayDirY, float rayDirZ)
-{
-    // Gunakan static function dari Raycast class
+                   float rayDirX, float rayDirY, float rayDirZ) {
     return Raycast::rayAABBIntersection(
         rayOriginX, rayOriginY, rayOriginZ,
         rayDirX, rayDirY, rayDirZ,
@@ -134,9 +123,9 @@ bool Laptop::isHit(float rayOriginX, float rayOriginY, float rayOriginZ,
     );
 }
 
+// Mengembalikan bounding box
 void Laptop::getBoundingBox(float& outMinX, float& outMinY, float& outMinZ,
-    float& outMaxX, float& outMaxY, float& outMaxZ) const
-{
+                            float& outMaxX, float& outMaxY, float& outMaxZ) const {
     outMinX = minX;
     outMinY = minY;
     outMinZ = minZ;
@@ -145,43 +134,47 @@ void Laptop::getBoundingBox(float& outMinX, float& outMinY, float& outMinZ,
     outMaxZ = maxZ;
 }
 
-void Laptop::draw()
-{
-    // Material property vectors (Diubah menjadi abu-abu)
-    float matAmbAndDif[] = { 0.6, 0.6, 0.6, 1.0 };
-    float matSpec[] = { 1.0, 1.0, 1.0, 1.0 };
-    float matShine[] = { 50.0 };
+// Menggambar laptop
+void Laptop::draw() {
+    // Properti material
+    float matAmbAndDif[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+    float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float matShine[] = { 50.0f };
 
-    // Terapkan material properties untuk laptop
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, matAmbAndDif);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matSpec);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, matShine);
 
-    // Aktifkan vertex arrays (dipindahkan dari drawScene)
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
 
-    // Tentukan lokasi array
     glVertexPointer(3, GL_FLOAT, 0, vertices);
     glNormalPointer(GL_FLOAT, 0, normals);
 
-    // Gambar 5 sisi dari "base" laptop
+    // Gambar base laptop
     glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_BYTE, stripIndices0);
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices1);
 
-    // Gambar "lid" (layar) yang berputar
+    // Gambar lid (layar)
     glPushMatrix();
+    glTranslatef(0.0f, 0.1f, -1.0f);
+    glRotatef(static_cast<float>(step), -1.0f, 0.0f, 0.0f);
+    glTranslatef(0.0f, -0.1f, 1.0f);
 
-    // MODIFIKASI: Translate ke hinge (engsel) baru di Y=0.1
-    glTranslatef(0.0, 0.1, -1.0);
-    glRotatef((float)step, -1.0, 0.0, 0.0);
-    glTranslatef(0.0, -0.1, 1.0);
-
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices2);
+    if (bIsScreenOn) {
+        // Layar menyala: gambar emissive (tanpa lighting)
+        glDisable(GL_LIGHTING);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices2);
+        glEnable(GL_LIGHTING);
+    } else {
+        // Layar mati: warna abu-abu gelap kebiruan
+        glColor3f(0.2f, 0.2f, 0.25f);
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices2);
+    }
 
     glPopMatrix();
 
-    // Disable client states (best practice)
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
 }

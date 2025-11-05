@@ -65,6 +65,7 @@ void drawScene(void)
 
     glPushMatrix();
     glTranslatef(3.0f, 1.0f, -2.0f);
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     tv.draw();
     glPopMatrix();
 
@@ -152,7 +153,32 @@ void mouseClick(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-       
+        std::cout << "Left click detected!" << std::endl;
+        
+        // Cek apakah kamera melihat laptop
+        if (camera.raycast(laptop))
+        {
+            std::cout << "Hit: Laptop" << std::endl;
+            
+            // Toggle layar laptop
+            laptop.toggleScreen();
+            
+            glutPostRedisplay(); // Refresh tampilan
+        }
+        // Cek apakah kamera melihat TV
+        else if (camera.raycast(tv))
+        {
+            std::cout << "Hit: TV" << std::endl;
+            
+            // Toggle layar TV
+            tv.toggleScreen();
+            
+            glutPostRedisplay(); // Refresh tampilan
+        }
+        else
+        {
+            std::cout << "Hit: Nothing" << std::endl;
+        }
     }
     else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
