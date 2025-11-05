@@ -134,6 +134,44 @@ void Laptop::getBoundingBox(float& outMinX, float& outMinY, float& outMinZ,
     outMaxZ = maxZ;
 }
 
+void Laptop::drawKeyboard()
+{
+    // Draw a simple keyboard on the base
+    float keyboardMaterial[] = { 0.2f, 0.2f, 0.2f, 1.0f }; // Dark gray
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, keyboardMaterial);
+
+    // Draw keyboard area
+    glBegin(GL_QUADS);
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-0.7f, 0.11f, 0.2f);   // Front left
+    glVertex3f(0.7f, 0.11f, 0.2f);    // Front right
+    glVertex3f(0.7f, 0.11f, -0.7f);   // Back right
+    glVertex3f(-0.7f, 0.11f, -0.7f);  // Back left
+    glEnd();
+
+    // Draw individual keys (simplified as small rectangles)
+    float keyMaterial[] = { 0.4f, 0.4f, 0.4f, 1.0f }; // Light gray
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, keyMaterial);
+
+    // Draw a few representative keys
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 10; col++) {
+            float x = -0.5f + col * 0.1f;
+            float z = 0.0f - row * 0.15f;
+            float keySize = 0.04f;
+
+            glBegin(GL_QUADS);
+            glNormal3f(0.0f, 1.0f, 0.0f);
+            glVertex3f(x - keySize, 0.12f, z - keySize);
+            glVertex3f(x + keySize, 0.12f, z - keySize);
+            glVertex3f(x + keySize, 0.12f, z + keySize);
+            glVertex3f(x - keySize, 0.12f, z + keySize);
+            glEnd();
+        }
+    }
+}
+
+
 // Menggambar laptop
 void Laptop::draw() {
     // Properti material
@@ -154,6 +192,7 @@ void Laptop::draw() {
     // Gambar base laptop
     glDrawElements(GL_TRIANGLE_STRIP, 10, GL_UNSIGNED_BYTE, stripIndices0);
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices1);
+	drawKeyboard();
 
     // Gambar lid (layar)
     glPushMatrix();
