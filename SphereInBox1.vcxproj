@@ -22,7 +22,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Lantai.cpp" />
     <ClCompile Include="Laptop.cpp" />
-    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meja.cpp" />
     <ClCompile Include="MejaTv.cpp" />
@@ -33,7 +32,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Lantai.h" />
     <ClInclude Include="Laptop.h" />
-    <ClInclude Include="Light.h" />
     <ClInclude Include="Meja.h" />
     <ClInclude Include="MejaTv.h" />
     <ClInclude Include="Raycast.h" />
