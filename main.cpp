@@ -12,6 +12,7 @@
 
 static Laptop laptop;
 static Camera camera;
+static Meja meja;
 static Tv tv;
 static MejaTv mejaTv;
 static Lantai lantai;
@@ -53,13 +54,22 @@ void drawScene(void)
     lantai.draw();
 
     glPushMatrix();
-    glTranslatef(-1.5f, 0.0f, 0.0f);
+	glScalef(0.5f, 0.5f, 0.5f);
+    glTranslatef(0.5f, 0.1f, 0.0f);
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     laptop.draw();
     glPopMatrix();
 
     glPushMatrix();
+	glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+    glTranslatef(0.0f, 0.0f, -0.25f);
+	meja.draw();
+	glPopMatrix();
+
+    glPushMatrix();
     glTranslatef(3.0f, 1.0f, -2.0f); 
     glTranslatef(0.0f, -1.2f, 0.0f); 
+	glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     mejaTv.draw();
     glPopMatrix();
 

@@ -10,7 +10,7 @@ public:
 
     // Menggambar laptop
     void draw();
-	void drawKeyboard();
+    void drawKeyboard();
 
     // Metode untuk mengontrol bukaan layar
     void openLid();

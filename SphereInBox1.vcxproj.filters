@@ -36,6 +36,12 @@
     <ClCompile Include="MejaTv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Laptop.h">
@@ -54,6 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MejaTv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
