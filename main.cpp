@@ -29,9 +29,9 @@ void setup(void)
 
     // Light property vectors.
     float lightAmb[] = { 0.0, 0.0, 0.0, 1.0 };
-    float lightDifAndSpec[] = { 1.0, 1.0, 1.0, 1.0 };
+    float lightDifAndSpec[] = { 0.5, 0.5, 0.5, 1.0 };
     float lightPos[] = { 0.0, 1.5, 3.0, 1.0 };
-    float globAmb[] = { 0.2, 0.2, 0.2, 1.0 };
+    float globAmb[] = { 0.1, 0.1, 0.1, 1.0 };
 
     // Light properties.
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb);
@@ -242,16 +242,6 @@ void keyInput(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-// Callback routine for non-ASCII key entry
-void specialKeyInput(int key, int x, int y)
-{
-    // MODIFIKASI: Panggil metode dari objek laptop
-    if (key == GLUT_KEY_UP) laptop.openLid();
-    if (key == GLUT_KEY_DOWN) laptop.closeLid();
-
-    glutPostRedisplay();
-}
-
 void printInteraction(void)
 {
     std::cout << "Interaction:" << std::endl;
@@ -276,7 +266,6 @@ int main(int argc, char** argv)
     glutDisplayFunc(drawScene);
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyInput);
-    glutSpecialFunc(specialKeyInput);
     glutPassiveMotionFunc(mouseMove);
     glutMouseFunc(mouseClick);
     glutSetCursor(GLUT_CURSOR_NONE);

@@ -175,9 +175,9 @@ void Laptop::drawKeyboard()
 // Menggambar laptop
 void Laptop::draw() {
     // Properti material
-    float matAmbAndDif[] = { 0.6f, 0.6f, 0.6f, 1.0f };
-    float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float matShine[] = { 50.0f };
+    float matAmbAndDif[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    float matSpec[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    float matShine[] = { 1.0f };
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, matAmbAndDif);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, matSpec);
@@ -208,7 +208,7 @@ void Laptop::draw() {
         glEnable(GL_LIGHTING);
     } else {
         // Layar mati: warna abu-abu gelap kebiruan
-        glColor3f(0.2f, 0.2f, 0.25f);
+        glColor3f(0.1f, 0.1f, 0.1f);
         glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, stripIndices2);
     }
 
